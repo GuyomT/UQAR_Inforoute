@@ -6,6 +6,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+## Requirements
+
+- Node.js (v12.22.9)
+- npm (8.5.1)
+- axios (npm install axios)
+- dotenv (npm install dotenv)
+- http-proxy-middleware (npm install http-proxy-middleware)
+
 ### `npm start`
 
 Runs the app in the development mode.\
