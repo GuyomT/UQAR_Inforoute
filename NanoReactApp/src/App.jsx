@@ -5,6 +5,8 @@ import NotFound from "./routes/NotFound";
 import Login from "./components/Login";
 // import Inscription from "./components/Inscription";
 import Menu from "./components/Menu";
+import Hotel from "./routes/Hotel";
+import Vol from "./routes/Vol";
 import { HashRouter, Route, Switch } from "react-router-dom";
 
 class App extends React.Component {
@@ -23,7 +25,7 @@ class App extends React.Component {
           password: "Rudina",
         },
         {
-          id: 1,
+          id: 3,
           username: "Paul",
           password: "Paul",
         },
@@ -52,6 +54,7 @@ class App extends React.Component {
 
   render() {
     return (
+     
       <HashRouter>
         <Menu/>
         <Switch>
@@ -64,11 +67,23 @@ class App extends React.Component {
               </div>
             )}
           />
+          
+          <Route
+            path="/Hotel"
+            component={Hotel
+            }
+          />
+          <Route
+            path="/Vol"
+            component={Vol
+            }
+          />
+
           <Route
             path="/Inscription"
             component={() => (
               <div>
-                <CreerCompte Inscription={this.inscription} />
+                <CreerCompte login={this.inscription} />
               </div>
             )}
           />
@@ -88,6 +103,7 @@ class App extends React.Component {
 
     //   <Login login={this.login}/>
     // </div>);}
+   
   }
 }
 export default App;

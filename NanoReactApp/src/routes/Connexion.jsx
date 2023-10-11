@@ -1,9 +1,9 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Form, Button, Image } from "react-bootstrap";
 import { FaUserLock } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
-
+import {NavLink } from "react-router-dom";
 
 const Connexion = (props) => {
     let _login;
@@ -13,6 +13,8 @@ const Connexion = (props) => {
     }
   return (
     <Container style={{marginTop:"150px"}}>
+      <Image src="./images/LogoBestTravel.png" style={{height:200, width:200 ,marginLeft:"40%",marginRight:"40%" }} roundedCircle />
+        
       <Card style={{marginLeft:"350px",marginRight:"350px",height:"300px"}}>
         <Card.Header as="h5">Ouvrir une session ou créez un compte</Card.Header>
         <Card.Body>
@@ -35,7 +37,7 @@ const Connexion = (props) => {
           <Col xs={2}></Col>
             <Col xs={3}>
             {/* <Button variant="primary">S'inscrire</Button> */}
-            <Card.Link href="#">S'inscrire</Card.Link>
+            <Card.Link to="/Inscription" as={NavLink}>S'inscrire</Card.Link>
             </Col>
             <Col xs={1}></Col> 
             <Col xs={6}>
