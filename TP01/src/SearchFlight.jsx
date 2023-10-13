@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { TextField, Button, Grid, Card, CardContent, Typography } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 const SearchFlight = () => {
   const [flights, setFlights] = useState([]);
@@ -80,17 +89,29 @@ const SearchFlight = () => {
       </Button>
 
       <div className="flight-list">
-        {dates.map((date, key) => (
-          <Card key={key} className="flight-card">
-            <CardContent>
-              <Typography variant="h5">{date}</Typography>
-              <Typography>
-                <span>{flights[date].origin}</span> to <span>{flights[date].destination}</span>
-              </Typography>
-              <Typography>{flights[date].price} CAD</Typography>
-            </CardContent>
-          </Card>
-        ))}
+      <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Date de départ</TableCell>
+            <TableCell>Origine</TableCell>
+            <TableCell>Destination</TableCell>
+            <TableCell>Prix ({searchParams.currency})</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {dates.map((date, key) => (
+            <TableRow key={key}>
+              <TableCell>{date}</TableCell>
+              <TableCell>{flights[date].origin}</TableCell>
+              <TableCell>{flights[date].destination}</TableCell>
+              <TableCell>{flights[date].price}</TableCell>
+              {/* Add more table cells for additional flight details */}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
       </div>
     </div>
   );
