@@ -31,7 +31,7 @@ const Menu = (props) => (
               <NavDropdown.Item href="#action/3.1">Modifier</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.2">
-               Supprimer
+               Déconnecter
               </NavDropdown.Item>
               
             </NavDropdown>

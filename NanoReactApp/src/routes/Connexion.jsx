@@ -4,6 +4,8 @@ import { Container, Row, Col, Card, Form, Button, Image } from "react-bootstrap"
 import { FaUserLock } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import {NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import {login} from "../actions/UtilisateursActions";
 
 const Connexion = (props) => {
     let _login;
@@ -49,4 +51,6 @@ const Connexion = (props) => {
     </Container>
   );
 };
-export default Connexion;
+
+
+export default connect(null,{login:login})(Connexion);

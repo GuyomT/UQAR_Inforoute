@@ -3,6 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Card, Form, Button, CardHeader, CardBody } from "react-bootstrap";
 import { FaUserLock } from "react-icons/fa";
 import { FaUnlockAlt } from "react-icons/fa";
+import { connect } from "react-redux";
+import {inscription} from "../actions/UtilisateursActions"
 
 const CreerCompte = (props) => {
   let _FirstName;
@@ -67,4 +69,8 @@ const CreerCompte = (props) => {
     </Container>
   );
 };
-export default CreerCompte;
+
+const mapStateToProps = (state) => {
+  return { data: state.users }
+};
+export default connect(mapStateToProps,{Inscription:inscription})(CreerCompte);

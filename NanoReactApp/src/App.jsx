@@ -2,13 +2,40 @@ import React from "react";
 import CreerCompte from "./routes/CreerCompte";
 import Connexion from "./routes/Connexion";
 import NotFound from "./routes/NotFound";
-import Login from "./components/Login";
-// import Inscription from "./components/Inscription";
+
 import Menu from "./components/Menu";
 import Hotel from "./routes/Hotel";
 import Vol from "./routes/Vol";
 import { HashRouter, Route, Switch } from "react-router-dom";
 
+const App = () => {
+  return (
+    <HashRouter>
+      <Menu />
+      <Switch>
+        <Route
+          exact
+          path="/"
+          component={() => (
+            <div>
+              <Connexion  />
+            </div>
+          )}
+        />
+
+        <Route path="/Hotel" component={Hotel} />
+        <Route path="/Vol" component={Vol} />
+
+        <Route path="/Inscription" component={CreerCompte} />
+        <Route component={NotFound} />
+      </Switch>
+    </HashRouter>
+  );
+};
+export default App;
+
+//App avec class
+/*
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -91,19 +118,8 @@ class App extends React.Component {
         </Switch>
       </HashRouter>
     );
-    // if(this.state.connectedUser =! null){
-    //   return (<div>
-    //     <CreerCompte Inscription={this.inscription}/>
-    //     <Menu/>
-    //   {/* <Inscription Inscription={this.inscription}/> */}
-    // </div>);
-
-    // }else {
-    //   return  (<div>
-
-    //   <Login login={this.login}/>
-    // </div>);}
+    
    
   }
 }
-export default App;
+export default App;*/
