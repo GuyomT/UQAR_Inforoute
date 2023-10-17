@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { TextField, Button, Grid, Card, CardContent, Typography } from "@mui/material";
 import {
@@ -15,19 +15,19 @@ const SearchFlight = () => {
   const [flights, setFlights] = useState([]);
   const [dates, setDates] = useState([]);
   const [searchParams, setSearchParams] = useState({
-    origin: "MOW",
-    destination: "KZN",
+    origin: "YUL",
+    destination: "",
     departDate: "2023-11",
     returnDate: "2023-12",
     currency: "CAD",
   });
-
+  const [sortOrder, setSortOrder] = useState("asc");
   const token = import.meta.env.VITE_API_KEY;
 
-  useEffect(() => {
+  const handleSearch = () => {
     axios
       .get(
-        `/api/v1/prices/calendar?origin=${searchParams.origin}&destination=${searchParams.destination}&depart_date=${searchParams.departDate}&return_date=${searchParams.returnDate}&token=${token}&currency=${searchParams.currency}`
+        `/flight/v1/prices/calendar?origin=${searchParams.origin}&destination=${searchParams.destination}&depart_date=${searchParams.departDate}&return_date=${searchParams.returnDate}&token=${token}&currency=${searchParams.currency}`
       )
       .then((res) => {
         setDates(Object.keys(res.data.data));
@@ -36,7 +36,17 @@ const SearchFlight = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [searchParams]);
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const sortedDates = dates.slice().sort((a, b) => {
+    const priceA = flights[a].price;
+    const priceB = flights[b].price;
+    return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+  });
 
   return (
     <div className="app">
@@ -84,34 +94,37 @@ const SearchFlight = () => {
         </Grid>
       </Grid>
 
-      <Button variant="contained" color="primary" onClick={() => {}}>
+      <Button variant="contained" color="primary" onClick={handleSearch}>
         Rechercher
       </Button>
 
       <div className="flight-list">
-      <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Date de départ</TableCell>
-            <TableCell>Origine</TableCell>
-            <TableCell>Destination</TableCell>
-            <TableCell>Prix ({searchParams.currency})</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dates.map((date, key) => (
-            <TableRow key={key}>
-              <TableCell>{date}</TableCell>
-              <TableCell>{flights[date].origin}</TableCell>
-              <TableCell>{flights[date].destination}</TableCell>
-              <TableCell>{flights[date].price}</TableCell>
-              {/* Add more table cells for additional flight details */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date de départ</TableCell>
+                <TableCell>Origine</TableCell>
+                <TableCell>Destination</TableCell>
+                <TableCell onClick={toggleSortOrder} style={{ cursor: "pointer" }}>
+                  Prix ({searchParams.currency}){" "}
+                  {sortOrder === "asc" ? "▲" : "▼"}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedDates.map((date, key) => (
+                <TableRow key={key}>
+                  <TableCell>{date}</TableCell>
+                  <TableCell>{flights[date].origin}</TableCell>
+                  <TableCell>{flights[date].destination}</TableCell>
+                  <TableCell>{flights[date].price}</TableCell>
+                  {/* Add more table cells for additional flight details */}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
