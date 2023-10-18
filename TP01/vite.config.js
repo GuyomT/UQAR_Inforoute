@@ -8,7 +8,7 @@ export default defineConfig({
                 target: "https://api.travelpayouts.com",
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/flight/, ""),
-              },
+            },
             "/hotel": {
                 target: "https://engine.hotellook.com",
                 changeOrigin: true,

@@ -7,15 +7,17 @@ import {
 } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
 
-const LoginPage = ({ setLoggedInUser, loggedUsers }) => {
+const LoginPage = (props) => {
+  const { userManager } = props;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (loggedUsers.find((user) => user.username === username && user.password === password)) {
-      setLoggedInUser({ username });
+    const loggedIn = userManager.login(username, password);
+
+    if (loggedIn) {
       navigate("/profile");
     } else {
       alert("Nom d'utilisateur ou mot de passe incorrect.");

@@ -1,64 +1,64 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Button, Typography, IconButton, Menu, MenuItem } from "@mui/material";
+import { AppBar, Toolbar, Button, Typography, IconButton, Drawer, List, ListItem, ListItemText, CssBaseline, Container, Grid } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 
-const NavBar = ({ loggedInUser, setLoggedInUser }) => {
+const NavBar = ({ userManager }) => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleMenuClick = () => {
+    setIsDrawerOpen(true);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
   };
 
   const handleLogout = () => {
-    setLoggedInUser(null);
+    userManager.logout();
     navigate("/login");
   };
 
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleMenuClick}>
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" style={{ flex: 1 }}>
-          TP01
-        </Typography>
-        {loggedInUser ? (
-          <>
-            <Button color="inherit" component={Link} to="/profile">
-              Profil
+    <>
+      <CssBaseline />
+      <AppBar position="sticky">
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleMenuClick}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" style={{ flex: 1 }}>
+            BestFlights
+          </Typography>
+          {userManager.currentUser ? (
+            <>
+              <Button color="inherit" component={Link} to="/profile">
+                Profil
+              </Button>
+              <Button color="inherit" onClick={handleLogout}>
+                Se déconnecter
+              </Button>
+            </>
+          ) : (
+            <Button color="inherit" component={Link} to="/login">
+              Se connecter
             </Button>
-            <Button color="inherit" onClick={handleLogout}>
-              Se déconnecter
-            </Button>
-          </>
-        ) : (
-          <Button color="inherit" component={Link} to="/login">
-            Se connecter
-          </Button>
-        )}
+          )}
+        </Toolbar>
+      </AppBar>
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem component={Link} to="/search-flight" onClick={handleMenuClose}>
-            Rechercher des vols
-          </MenuItem>
-          <MenuItem component={Link} to="/search-hotel" onClick={handleMenuClose}>
-            Rechercher des hôtels
-          </MenuItem>
-          {/* Ajoutez d'autres éléments de menu ici */}
-        </Menu>
-      </Toolbar>
-    </AppBar>
+      <Drawer anchor="left" open={isDrawerOpen} onClose={handleDrawerClose}>
+        <List>
+          <ListItem component={Link} to="/search-flight" onClick={handleDrawerClose}>
+            <ListItemText primary="Rechercher des vols" />
+          </ListItem>
+          <ListItem component={Link} to="/search-hotel" onClick={handleDrawerClose}>
+            <ListItemText primary="Rechercher des hôtels" />
+          </ListItem>
+        </List>
+      </Drawer>
+    </>
   );
 };
 

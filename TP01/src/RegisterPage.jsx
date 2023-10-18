@@ -4,11 +4,10 @@ import {
   TextField,
   Button,
   Typography,
-  Link,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-const RegisterPage = ({ setLoggedInUser, setLoggedUsers}) => {
+const RegisterPage = (props) => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [birthDate, setBirthDate] = useState("");
@@ -16,19 +15,29 @@ const RegisterPage = ({ setLoggedInUser, setLoggedUsers}) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+  const { userManager } = props;
 
-  const handleRegister = (e) => {
-    e.preventDefault();
+  const handleRegister = () => {
+    const newUser = {
+      name,
+      surname,
+      birthDate,
+      username,
+      password,
+      balance: 100,
+    };
 
-    if (password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas.");
-      return;
+    const registered = userManager.register(newUser);
+
+    if (registered) {
+      // Optionally, you can log in the user after registration
+      userManager.login(newUser.username, newUser.password);
+
+      // Redirect to the profile page
+      navigate("/profile");
+    } else {
+      alert("Compte déjà existant ou les mots de passe ne correspondent pas.");
     }
-
-    setLoggedUsers([{username, password}])
-    setLoggedInUser({ username });
-    alert("Compte créé avec succès !");
-    navigate("/profile");
   };
 
   return (
@@ -38,7 +47,7 @@ const RegisterPage = ({ setLoggedInUser, setLoggedUsers}) => {
           Inscription
         </Typography>
         <form onSubmit={handleRegister}>
-          <TextField
+        <TextField
             label="Nom"
             variant="outlined"
             value={name}
