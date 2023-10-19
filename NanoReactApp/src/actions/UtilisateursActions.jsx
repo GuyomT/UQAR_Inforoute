@@ -1,3 +1,6 @@
+import axios from "axios";
+
+
 export const inscription = (firstname, lastname, email, password) => {
     return {
         type: "INSCRIPTION",

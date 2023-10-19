@@ -4,6 +4,8 @@ import { Container, Row, Col, Card, Form, Button, CardHeader, CardBody, Floating
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { connect } from "react-redux";
+import {chercheVol} from "../actions/VolActions"
 
 const Vol= (props ) => {
 
@@ -57,7 +59,7 @@ const Vol= (props ) => {
         
       </Col>
       <Col md={{ span: 1,offset:10}} style={{marginTop:"30px"}} > 
-     <Button  variant="primary" >Rechercher</Button>
+     <Button  variant="primary" onClick={props.chercheVol}>Rechercher</Button>
       </Col>
       
     </Row>
@@ -71,4 +73,9 @@ const Vol= (props ) => {
         </Container>
       );
 };
-export default Vol ;
+
+
+const mapStateToProps = (state) => {
+  return { data: state.Vols }
+};
+export default connect(mapStateToProps,{chercheVol:chercheVol}) (Vol) ;
