@@ -1,7 +1,9 @@
 const volsReducer = (vols = [], action) => {
     switch (action.type) {
-        case "CHERCHER_VOL" :
-            return action.payload.data;
+        case "RESERVER_VOL" :
+            return [...vols,action.payload];
+        case "REINITIALISER_VOL" :
+            return [];
         default:
             return vols;
     }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-export const inscription = (firstname, lastname, email, password) => {
+export const inscription = (firstname, lastname, email, password, dateDeNaissance) => {
     return {
         type: "INSCRIPTION",
         payload: {
@@ -9,6 +9,7 @@ export const inscription = (firstname, lastname, email, password) => {
             lastname: lastname,
             email: email,
             password: password,
+            dateDeNaissance:dateDeNaissance
 
         },
     };

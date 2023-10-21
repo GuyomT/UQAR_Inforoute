@@ -6,29 +6,33 @@ import NotFound from "./routes/NotFound";
 import Menu from "./components/Menu";
 import Hotel from "./routes/Hotel";
 import Vol from "./routes/Vol";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import Profil from "./routes/Profil";
+import Facture from "./routes/Facture";
 
 const App = () => {
   return (
     <HashRouter>
       <Menu />
-      <Switch>
+      <Routes>
         <Route
           exact
           path="/"
-          component={() => (
+          element={
             <div>
               <Connexion  />
             </div>
-          )}
+          }
         />
 
-        <Route path="/Hotel" component={Hotel} />
-        <Route path="/Vol" component={Vol} />
+        <Route exact path="/Hotel" element={<Hotel></Hotel>} />
+        <Route exact path="/Vol" element={<Vol></Vol>} />
 
-        <Route path="/Inscription" component={CreerCompte} />
-        <Route component={NotFound} />
-      </Switch>
+        <Route exact path="/Facture" element={<Facture></Facture>} />
+        <Route exact path="/Inscription" element={<CreerCompte></CreerCompte>} />
+        <Route exact path="/Profil" element={<Profil></Profil>} />
+        <Route exact element={<NotFound></NotFound>} />
+      </Routes>
     </HashRouter>
   );
 };

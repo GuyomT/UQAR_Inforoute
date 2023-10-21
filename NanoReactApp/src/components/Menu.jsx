@@ -10,7 +10,9 @@ import { Col, Container, Row, Image } from "react-bootstrap";
 const Menu = (props) => (
     <Container>
     <NavBar bg="dark" variant="dark">
-    <Image src="./images/LogoBestTravel.png" style={{height:60, width:60 ,marginRight:0  }} roundedCircle />
+        <Nav>
+        <Nav.Link to="/" replace as={NavLink}><Image src="./images/LogoBestTravel.png" style={{height:60, width:60 ,marginRight:0  }} roundedCircle to="/" as={NavLink}/>
+        </Nav.Link></Nav>
         
         <Nav>
         <Nav.Link to="/Vol" replace as={NavLink} style={{marginRight:"40px", marginLeft:"40px"  }}>
@@ -21,8 +23,8 @@ const Menu = (props) => (
             <FaHotel/> Hôtel
 
         </Nav.Link>
-        <Nav.Link to="/Reservations" replace as={NavLink} style={{marginRight:"40px"  }}>
-            <FaArchive/> Mes réservations
+        <Nav.Link to="/Facture" replace as={NavLink} style={{marginRight:"40px"  }}>
+            <FaArchive/> Facturation
 
         </Nav.Link>
         

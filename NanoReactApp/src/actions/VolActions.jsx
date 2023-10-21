@@ -17,10 +17,25 @@ return (dispatch) => {
 
         },
     )
+}
+}
+export const reserverVol = (vol) => {
+    return {
+        type: "RESERVER_VOL",
+        payload: {
+            Origin: vol.origin,
+            Destination: vol.destination,
+            Airline: vol.airline,
+            DateDeDepart: vol.departure_at,
+            DateDeRetour: vol.return_at,
+            NumeroDeVol: vol.flight_number,
+            Prix: vol.price
 
+
+        },
+    };
 }
 
 
-}
 
 

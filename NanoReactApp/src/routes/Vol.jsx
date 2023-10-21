@@ -1,81 +1,137 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Row, Col, Card, Form, Button, CardHeader, CardBody, FloatingLabel } from "react-bootstrap";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
-import { FaMapMarkerAlt } from "react-icons/fa";
+
 import { connect } from "react-redux";
+
+import axios from "axios";
+import { TextField, Button, Grid, Card, CardContent, Typography } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import {chercheVol} from "../actions/VolActions"
+import ResultatRechercheVol from "../components/ResultatRechercheVol";
 
-const Vol= (props ) => {
 
-    return (
-        <Container style={{marginTop:"50px"}}>
-          <Row>
-            <Card style={{marginLeft:"5px",marginRight:"5px",height:"300px", width:"1130px"}}>
-        <Card.Header as="h5">Réservez votre vol</Card.Header>
-              <Row style={{marginTop:"30px", marginLeft:"5px", marginRight:"5px"}} className="g-2">
-      <Col  md={{ span: 3}}>
- 
-            <FaMapMarkerAlt/> 
-      <Form.Label>Départ</Form.Label>
-          <Form.Control type="text" placeholder="Destination" />
-        
-      </Col>
-      <Col  md={{ span: 3}}>
- 
-            <FaMapMarkerAlt/> 
-      <Form.Label>Destination</Form.Label>
-          <Form.Control type="text" placeholder="Destination" />
-        
-      </Col>
-      <Col md={{ span: 2}}>
-      <FaRegCalendarAlt/> 
-        
-      <Form.Label>Date départ</Form.Label>
-          <Form.Control type="date" placeholder="Dates" />
-        
-      </Col>
-      <Col md={{ span: 2}}>
-      <FaRegCalendarAlt/> 
-          <Form.Label>Date retour</Form.Label>
-          <Form.Control type="date" placeholder="Dates" />
-        
-      </Col>
-      <Col md={{ span: 2}}>
-        <FaUser />
-        <Form.Label>Personnes</Form.Label>
-              <Form.Control type="number" placeholder="Adulte" />
-            
-              <Form.Control type="number" placeholder="Enfant" />
-            
-        
-          {/* <Form.Select aria-label="Floating label select example">
-            <option>Personnes</option>
-            <option value="1">Adulte</option>
-            <option value="2">Enfant</option>
-            
-          </Form.Select> */}
-        
-      </Col>
-      <Col md={{ span: 1,offset:10}} style={{marginTop:"30px"}} > 
-     <Button  variant="primary" onClick={props.chercheVol}>Rechercher</Button>
-      </Col>
-      
-    </Row>
-    </Card> 
-    </Row>
-    <Row>
-    <Card style={{marginTop:"10px", marginLeft:"5px",marginRight:"5px",height:"300px", width:"1130px"}}>
-      <Card.Body>Listes de recherche</Card.Body>
-    </Card>
-     </Row>
-        </Container>
-      );
+
+
+const Vol = () => {
+  const [flights, setFlights] = useState([]);
+  const [dates, setDates] = useState([]);
+  const [searchParams, setSearchParams] = useState({
+    origin: "YUL",
+    destination: "",
+    departDate: "2023-11",
+    returnDate: "2023-12",
+    currency: "CAD",
+  });
+  const [sortOrder, setSortOrder] = useState("asc");
+  const token = import.meta.env.VITE_API_KEY;;
+
+  const handleSearch = () => {
+    axios
+      .get(
+        `/flight/v1/prices/calendar?origin=${searchParams.origin}&destination=${searchParams.destination}&depart_date=${searchParams.departDate}&return_date=${searchParams.returnDate}&token=${token}&currency=${searchParams.currency}`
+      )
+      .then((res) => {
+        setDates(Object.keys(res.data.data));
+        setFlights(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const sortedDates = dates.slice().sort((a, b) => {
+    const priceA = flights[a].price;
+    const priceB = flights[b].price;
+    return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+  });
+
+  return (
+    <div className="app">
+      <h1>Recherche de vols</h1>
+      <Grid container spacing={2}>
+        <Grid item xs={2}>
+          <TextField
+            label="Origine"
+            variant="outlined"
+            value={searchParams.origin}
+            onChange={(e) => setSearchParams({ ...searchParams, origin: e.target.value })}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            label="Destination"
+            variant="outlined"
+            value={searchParams.destination}
+            onChange={(e) => setSearchParams({ ...searchParams, destination: e.target.value })}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            label="Date de départ"
+            variant="outlined"
+            value={searchParams.departDate}
+            onChange={(e) => setSearchParams({ ...searchParams, departDate: e.target.value })}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            label="Date de retour"
+            variant="outlined"
+            value={searchParams.returnDate}
+            onChange={(e) => setSearchParams({ ...searchParams, returnDate: e.target.value })}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <TextField
+            label="Monnaie"
+            variant="outlined"
+            value={searchParams.currency}
+            onChange={(e) => setSearchParams({ ...searchParams, currency: e.target.value })}
+          />
+        </Grid>
+      </Grid>
+
+      <Button variant="contained" color="primary" onClick={handleSearch}>
+        Rechercher
+      </Button>
+
+      <div className="flight-list">
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Date de départ</TableCell>
+                <TableCell>Origine</TableCell>
+                <TableCell>Destination</TableCell>
+                <TableCell onClick={toggleSortOrder} style={{ cursor: "pointer" }}>
+                  Prix ({searchParams.currency}){" "}
+                  {sortOrder === "asc" ? "▲" : "▼"}
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedDates.map((date, key) => (
+                <ResultatRechercheVol data={flights[date] } key={key} date={date}>
+                </ResultatRechercheVol>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </div>
+  );
 };
-
-
-const mapStateToProps = (state) => {
-  return { data: state.Vols }
-};
-export default connect(mapStateToProps,{chercheVol:chercheVol}) (Vol) ;
+export default connect(null,{chercheVol:chercheVol}) (Vol) ;
