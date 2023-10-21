@@ -8,7 +8,7 @@ import {NavLink } from "react-router-dom";
 import { Col, Container, Row, Image } from "react-bootstrap";
 
 const Menu = (props) => (
-    <Container>
+    <Container >
     <NavBar bg="dark" variant="dark">
         <Nav>
         <Nav.Link to="/" replace as={NavLink}><Image src="./images/LogoBestTravel.png" style={{height:60, width:60 ,marginRight:0  }} roundedCircle to="/" as={NavLink}/>

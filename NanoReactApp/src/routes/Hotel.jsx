@@ -1,67 +1,162 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Row, Col, Card, Form, Button, CardHeader, CardBody, FloatingLabel } from "react-bootstrap";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
-import { FaMapMarkerAlt } from "react-icons/fa";
 
-const Hotel= (props ) => {
+import { connect } from "react-redux";
 
-    return (
-        <Container style={{marginTop:"50px"}}>
-          <Row>
-            <Card style={{marginLeft:"10px",marginRight:"10px",height:"300px", width:"1130px"}}>
-        <Card.Header as="h5">Réservez votre hébergement</Card.Header>
-              <Row style={{marginTop:"30px", marginLeft:"30px", marginRight:"10px"}} className="g-2">
-      <Col  md={{ span: 3}}>
- 
-            <FaMapMarkerAlt/> 
-      <Form.Label>Destination</Form.Label>
-          <Form.Control type="text" placeholder="Destination" />
-        
-      </Col>
-      <Col md={{ span: 3}}>
-      <FaRegCalendarAlt/> 
-        
-      <Form.Label>Date début</Form.Label>
-          <Form.Control type="date" placeholder="Dates" />
-        
-      </Col>
-      <Col md={{ span: 3}}>
-      <FaRegCalendarAlt/> 
-          <Form.Label>Date fin</Form.Label>
-          <Form.Control type="date" placeholder="Dates" />
-        
-      </Col>
-      <Col md={{ span: 2}}>
-        <FaUser />
-        <Form.Label>Personnes</Form.Label>
-              <Form.Control type="number" placeholder="Adulte" />
-            
-              <Form.Control type="number" placeholder="Enfant" />
-            
-        
-          {/* <Form.Select aria-label="Floating label select example">
-            <option>Personnes</option>
-            <option value="1">Adulte</option>
-            <option value="2">Enfant</option>
-            
-          </Form.Select> */}
-        
-      </Col>
-      <Col md={{ span: 1,offset:9}} style={{marginTop:"30px"}} > 
-     <Button  variant="primary" >Rechercher</Button>
-      </Col>
+import axios from "axios";
+import { Row, Col,Card, CardHeader,CardBody  } from "react-bootstrap";
+import {
+  TextField,
+  Button,
+  Grid,
+  CardContent,
+  Typography,
+} from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import ResultatRechercheHotel from "../components/ResultatRechercheHotel";
+
+const Hotel = () => {
+  const [hotels, setHotels] = useState([]);
+  const [searchParams, setSearchParams] = useState({
+    destination: "CDG",
+    arrivalDate: "2023-10-22",
+    departureDate: "2023-10-25",//TODO
+    numberofpassanger: 1,
+  });
+  const [sortOrder, setSortOrder] = useState("asc");
+  const token = import.meta.env.VITE_API_KEY;
+
+  const handleSearch = () => {
+    axios
+      .get(
+        // `/hotel/api/v2/lookup.json?query=${searchParams.destination}&lang=fr&lookFor=both&limit=100&token=${token}`
+        `/hotel/api/v2/cache.json?location=${searchParams.destination}&checkIn=${searchParams.arrivalDate}&checkOut=${searchParams.departureDate}&adults=2&children=10&infants=0&currency=cad&limit=100&token=${token}`
       
-    </Row>
-    </Card> 
-    </Row>
-    <Row>
-    <Card style={{marginTop:"10px", marginLeft:"5px",marginRight:"5px",height:"300px", width:"1130px"}}>
-      <Card.Body>Listes de recherche</Card.Body>
-    </Card>
-     </Row>
-        </Container>
-      );
+        )
+      .then((res) => {
+        setHotels(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+
+
+  return (
+    <div className="app centered" >
+      <Card  >
+      
+        
+        <Card.Header as="h5">Réservez votre hébergement</Card.Header>
+        
+      <Card.Body >
+        <Grid container spacing={2}>
+        <Grid item xs={2}>
+            <TextField
+              label="Destination"
+              variant="outlined"
+              type="text"
+              value={searchParams.destination}
+              onChange={(e) =>
+                setSearchParams({
+                  ...searchParams,
+                  destination: e.target.value,
+                })
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              label="Date d'entrée"
+              variant="outlined"
+              type="date"
+              value={searchParams.arrivalDate}
+              onChange={(e) =>
+                setSearchParams({
+                  ...searchParams,
+                  arrivalDate: e.target.value,
+                })
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              label="Date de sortie"
+              type="date"
+              variant="outlined"
+              value={searchParams.departureDate}
+              onChange={(e) =>
+                setSearchParams({ ...searchParams, departDate: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              label="Nombre de passagers"
+              variant="outlined"
+              type="number"
+              value={searchParams.numberofpassanger}
+              onChange={(e) =>
+                setSearchParams({
+                  ...searchParams,
+                  numberofpassanger: e.target.value,
+                })
+              }
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Button variant="contained" color="primary" onClick={handleSearch}>
+              Rechercher
+            </Button>
+          </Grid>
+        </Grid>
+        </Card.Body>
+      </Card>
+      
+      <div >
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Hotel</TableCell>
+                <TableCell>Ville</TableCell>
+                <TableCell>Pays</TableCell>
+                <TableCell 
+                  onClick={toggleSortOrder}
+                  style={{ cursor: "pointer" }}
+                  >Prix{sortOrder === "asc" ? "▲" : "▼"}</TableCell>
+                <TableCell>Étoiles </TableCell>
+                
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {hotels.map((hotel, key) => (
+                <ResultatRechercheHotel
+                  data={hotel}
+                  key={key}
+                  
+                  nombreDePassager={searchParams.numberofpassanger}
+                ></ResultatRechercheHotel>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+      </div>
+  );
 };
-export default Hotel ;
+export default Hotel;
