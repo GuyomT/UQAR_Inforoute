@@ -1,31 +1,18 @@
-import React from "react";
-import { connect } from "react-redux";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
-import { supprimerReservationVol } from "../actions/VolActions";
-import { Button } from "react-bootstrap";
-
+//TODO
 const Facture = (props) => {
-  
-  return (
-    <TableRow key={props.key}>
-      <TableCell>
-        {new Date(props.data.DateDeDepart).toLocaleString()}
-      </TableCell>
-      <TableCell>{new Date(props.data.DateDeRetour).toLocaleString()}</TableCell>
-      <TableCell>{props.data.Origin}</TableCell>
-      <TableCell>{props.data.Destination}</TableCell>
-      <TableCell>{props.data.Airline}</TableCell>
-      <TableCell>{props.data.Prix}</TableCell>
-      </TableRow>
-  );
+    return (<Modal
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <Box sx={style}>
+    <Typography id="modal-modal-title" variant="h6" component="h2">
+      Text in a modal
+    </Typography>
+    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+      Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+    </Typography>
+  </Box>
+</Modal>);
 };
+;
 export default Facture;
-

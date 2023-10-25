@@ -1,30 +1,22 @@
 import React from "react";
-import { connect } from "react-redux";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
-import { supprimerReservationVol } from "../actions/VolActions";
+import { v4 } from "uuid";
+import { TableCell, TableRow } from "@mui/material";
 import { Button } from "react-bootstrap";
+import Facture from "./Facture";
 
 const LigneFacture = (props) => {
-  const Supprimer = () => {
-    props.SupprimerReservationVol(
-      props.data);
-};
+  function currencyFormat(num) {
+    return num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  }
+  const DetailFacture = () => {
+    return <Facture Key={v4()}></Facture>;
+  };
   return (
     <TableRow key={props.key}>
-      <TableCell>
-        {props.data.DateDepayement}
-      </TableCell>
-       <TableCell>{props.data.Total}</TableCell>
+      <TableCell>{props.data.DateDepayement}</TableCell>
+      <TableCell>{currencyFormat(props.data.Total)}</TableCell>
+      {/* <TableCell><Button variant="primary"  onClick={DetailFacture}>Détail</Button></TableCell> */}
     </TableRow>
   );
 };
-export default connect(null, { SupprimerReservationVol: supprimerReservationVol })(LigneFacture);
-
+export default LigneFacture;

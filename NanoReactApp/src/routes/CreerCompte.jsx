@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Container,
@@ -10,12 +10,12 @@ import {
   CardHeader,
   CardBody,
 } from "react-bootstrap";
-import { FaUserLock } from "react-icons/fa";
-import { FaUnlockAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { inscription } from "../actions/UtilisateursActions";
-import {NavLink } from "react-router-dom";
-import {useNavigate}  from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import validator from "validator";
 
 const CreerCompte = (props) => {
   let _FirstName;
@@ -24,8 +24,56 @@ const CreerCompte = (props) => {
   let _Email;
   let _DateDeNaissance;
   let _PasswordConfirmation;
+  const [emailError, setEmailError] = useState("");
+  let emailValid = true;
+  const validateEmail = (e) => {
+    var email = e.target.value;
+
+    if (validator.isEmail(email)) {
+      setEmailError("");
+      emailValid = true;
+    } else {
+      setEmailError("émail non valide");
+      emailValid = false;
+    }
+  };
+  const navigate = useNavigate();
   const Inscription = () => {
-    if (_Password.value == _PasswordConfirmation.value) {
+    let formValid = true;
+    if (_Password.value != _PasswordConfirmation.value) {
+      formValid = false;
+      toast.error("Mot de passe n'est pas conforme", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    if (
+      _FirstName.value.trim() === "" ||
+      _LastName.value.trim() === "" ||
+      _Email.value.trim() === "" ||
+      _Password.value.trim() === "" ||
+      _DateDeNaissance.value.trim() === ""
+    ) {
+      toast.error("Tous les champs sont obligatoires.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      formValid = false;
+    }
+
+    if (formValid) {
       props.Inscription(
         _FirstName.value,
         _LastName.value,
@@ -33,10 +81,17 @@ const CreerCompte = (props) => {
         _Password.value,
         _DateDeNaissance.value
       );
-      // useNavigate('/');
-    }else{
-      alert("Mot de passe n'est pas conforme ");
-      //TODO
+      toast.success("Compte ajouté avec succès", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      navigate("/");
     }
   };
   return (
@@ -47,15 +102,18 @@ const CreerCompte = (props) => {
         <CardHeader as="h5">Créer votre compte</CardHeader>
         <CardBody>
           <Form style={{ padding: "40px" }}>
-            <Form.Group as={Row} className="mb-3" controlId="formPlaintextName">
-              <Form.Label column sm="2">
+            <Form.Group
+              as={Row}
+              className="mb-3"
+              controlId="formPlaintextFirstName"
+            >
+              <Form.Label column sm="3">
                 Prénom
               </Form.Label>
-              <Col sm="10">
+              <Col sm="9">
                 <Form.Control
                   type="text"
                   placeholder="Entrez votre prénom"
-                  
                   ref={(input) => (_FirstName = input)}
                 />
               </Col>
@@ -64,12 +122,12 @@ const CreerCompte = (props) => {
             <Form.Group
               as={Row}
               className="mb-3"
-              controlId="formPlaintextFirstName"
+              controlId="formPlaintextLastName"
             >
-              <Form.Label column sm="2">
+              <Form.Label column sm="3">
                 Nom
               </Form.Label>
-              <Col sm="10">
+              <Col sm="9">
                 <Form.Control
                   type="text"
                   placeholder="Entrez votre nom"
@@ -81,12 +139,12 @@ const CreerCompte = (props) => {
             <Form.Group
               as={Row}
               className="mb-3"
-              controlId="formPlaintextEmail"
+              controlId="formPlaintextDateNaissance"
             >
-              <Form.Label column sm="2">
+              <Form.Label column sm="3">
                 Naissance
               </Form.Label>
-              <Col sm="10">
+              <Col sm="9">
                 <Form.Control
                   type="date"
                   defaultValue="20/10/2000"
@@ -100,16 +158,20 @@ const CreerCompte = (props) => {
               className="mb-3"
               controlId="formPlaintextEmail"
             >
-              <Form.Label column sm="2">
+              <Form.Label column sm="3">
                 Email
               </Form.Label>
-              <Col sm="10">
+              <Col sm="9">
                 <Form.Control
                   type="email"
                   defaultValue="email@example.com"
                   ref={(input) => (_Email = input)}
+                  onChange={(e) => validateEmail(e)}
                 />
               </Col>
+              <span style={{ fontWeight: "bold", color: "red" }}>
+                {emailError}
+              </span>
             </Form.Group>
 
             <Form.Group
@@ -117,10 +179,10 @@ const CreerCompte = (props) => {
               className="mb-3"
               controlId="formPlaintextPassword"
             >
-              <Form.Label column sm="2">
+              <Form.Label column sm="3">
                 Password
               </Form.Label>
-              <Col sm="10">
+              <Col sm="9">
                 <Form.Control
                   type="password"
                   placeholder="Password"
@@ -132,12 +194,12 @@ const CreerCompte = (props) => {
             <Form.Group
               as={Row}
               className="mb-3"
-              controlId="formPlaintextPassword"
+              controlId="formPlaintextConfirmPassword"
             >
-              <Form.Label column sm="2">
+              <Form.Label column sm="3">
                 Confirmation Password
               </Form.Label>
-              <Col sm="10">
+              <Col sm="9">
                 <Form.Control
                   type="password"
                   placeholder="Confirmation Password"
@@ -145,10 +207,13 @@ const CreerCompte = (props) => {
                 />
               </Col>
             </Form.Group>
-
-            <Button variant="primary"  onClick={Inscription}>
-              Créer
-            </Button>
+            <Form.Group as={Row} className="mb-3">
+              <Col sm="9">
+                <Button variant="primary" onClick={Inscription}>
+                  Créer
+                </Button>{" "}
+              </Col>
+            </Form.Group>
           </Form>
         </CardBody>
       </Card>

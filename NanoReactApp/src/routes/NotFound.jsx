@@ -1,8 +1,6 @@
 import React from "react";
-
 import { Container, Button } from "react-bootstrap";
 import { FaHome, FaTimesCircle } from "react-icons/fa";
-
 import { Link } from "react-router-dom";
 
 const NotFound = (props) => (
