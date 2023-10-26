@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  TableSortLabel,
 } from "@mui/material";
 import ResultatRechercheVol from "../components/ResultatRechercheVol";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Vol = (props) => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (Object.keys(props.connectedUser).length == 0) {
+    if (Object.keys(props.connectedUser).length === 0) {
       navigate("/");
       toast.error("Vous devez être connecté.", {
         position: "top-right",
@@ -34,7 +35,8 @@ const Vol = (props) => {
         theme: "light",
       });
     }
-  });
+  }, [navigate, props.connectedUser]);
+
   const [flights, setFlights] = useState([]);
   const [dates, setDates] = useState([]);
   const [searchParams, setSearchParams] = useState({
@@ -44,7 +46,7 @@ const Vol = (props) => {
     returnDate: "2023-12-25",
     numberofpassanger: 1,
   });
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortConfig, setSortConfig] = useState({ key: 'price', direction: 'asc' });
   const token = import.meta.env.VITE_API_KEY;
 
   const handleSearch = () => {
@@ -61,21 +63,21 @@ const Vol = (props) => {
       });
   };
 
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  const handleSort = () => {
+    const isAsc = sortConfig.direction === 'asc';
+    setSortConfig({ key: 'price', direction: isAsc ? 'desc' : 'asc' });
   };
 
   const sortedDates = dates.slice().sort((a, b) => {
-    const priceA = flights[a].price;
-    const priceB = flights[b].price;
-    return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+    const priceA = flights[a].price * searchParams.numberofpassanger;
+    const priceB = flights[b].price * searchParams.numberofpassanger;
+    return (sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA);
   });
 
   return (
     <div className="app centered">
       <Card>
         <Card.Header as="h5">Réservez votre vol</Card.Header>
-
         <Card.Body>
           <Grid container spacing={2}>
             <Grid item xs={2}>
@@ -193,13 +195,15 @@ const Vol = (props) => {
                 <TableCell>Date de retour</TableCell>
                 <TableCell>Origine</TableCell>
                 <TableCell>Destination</TableCell>
-                <TableCell>Compagnie </TableCell>
-                <TableCell
-                  onClick={toggleSortOrder}
-                  style={{ cursor: "pointer" }}
-                >
-                  Prix (CAD)
-                  {sortOrder === "asc" ? "▲" : "▼"}
+                <TableCell>Compagnie</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={sortConfig.key === 'price'}
+                    direction={sortConfig.direction}
+                    onClick={handleSort}
+                  >
+                    Prix (CAD)
+                  </TableSortLabel>
                 </TableCell>
                 <TableCell></TableCell>
               </TableRow>
@@ -220,7 +224,9 @@ const Vol = (props) => {
     </div>
   );
 };
+
 const mapStateToProps = (state) => {
   return { connectedUser: state.connectedUser };
 };
+
 export default connect(mapStateToProps)(Vol);

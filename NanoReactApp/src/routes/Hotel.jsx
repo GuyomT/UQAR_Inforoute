@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { connect } from "react-redux";
 import axios from "axios";
 import { Card } from "react-bootstrap";
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField, Button, Grid, TableSortLabel } from "@mui/material";
 import {
   Table,
   TableBody,
@@ -20,8 +20,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Hotel = (props) => {
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (Object.keys(props.connectedUser).length == 0) {
+    if (Object.keys(props.connectedUser).length === 0) {
       navigate("/");
       toast.error("Vous devez être connecté.", {
         position: "top-right",
@@ -34,7 +35,8 @@ const Hotel = (props) => {
         theme: "light",
       });
     }
-  });
+  }, [navigate, props.connectedUser]);
+
   const [hotels, setHotels] = useState([]);
   const [searchParams, setSearchParams] = useState({
     destination: "Montreal",
@@ -42,13 +44,12 @@ const Hotel = (props) => {
     departureDate: "2023-12-25",
     numberofpassanger: 1,
   });
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortConfig, setSortConfig] = useState({ key: 'priceAvg', direction: 'asc' });
   const token = import.meta.env.VITE_API_KEY;
 
   const handleSearch = () => {
     axios
       .get(
-        // `/hotel/api/v2/lookup.json?query=${searchParams.destination}&lang=fr&lookFor=both&limit=100&token=${token}`
         `/hotel/api/v2/cache.json?location=${searchParams.destination}&checkIn=${searchParams.arrivalDate}&checkOut=${searchParams.departureDate}&adults=${searchParams.numberofpassanger}&children=0&infants=0&currency=cad&limit=50&token=${token}`
       )
       .then((res) => {
@@ -59,15 +60,21 @@ const Hotel = (props) => {
       });
   };
 
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  const handleSort = () => {
+    const isAsc = sortConfig.direction === 'asc';
+    setSortConfig({ key: 'price', direction: isAsc ? 'desc' : 'asc' });
   };
+
+  const sortedHotels = [...hotels].sort((a, b) => {
+    const priceA = a.priceAvg;
+    const priceB = b.priceAvg;
+    return (sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA);
+  });
 
   return (
     <div className="app centered">
       <Card>
         <Card.Header as="h5">Réservez votre hébergement</Card.Header>
-
         <Card.Body>
           <Grid container spacing={2}>
             <Grid item xs={2}>
@@ -105,7 +112,6 @@ const Hotel = (props) => {
                         theme: "light",
                       }
                     );
-                    e.target.preventDefault();
                   } else {
                     setSearchParams({
                       ...searchParams,
@@ -136,7 +142,6 @@ const Hotel = (props) => {
                         theme: "light",
                       }
                     );
-                    e.target.preventDefault();
                   } else {
                     setSearchParams({
                       ...searchParams,
@@ -181,24 +186,26 @@ const Hotel = (props) => {
                 <TableCell>Hotel</TableCell>
                 <TableCell>Ville</TableCell>
                 <TableCell>Pays</TableCell>
-                <TableCell>Étoiles </TableCell>
-                <TableCell
-                  onClick={toggleSortOrder}
-                  style={{ cursor: "pointer" }}
-                >
-                  Prix(CAD){sortOrder === "asc" ? "▲" : "▼"}
+                <TableCell>Étoiles</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={sortConfig.key === 'priceAvg'}
+                    direction={sortConfig.direction}
+                    onClick={handleSort}
+                  >
+                    Prix (CAD)
+                  </TableSortLabel>
                 </TableCell>
-
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {hotels.map((hotel, key) => (
+              {sortedHotels.map((hotel, key) => (
                 <ResultatRechercheHotel
                   data={hotel}
                   key={key}
                   nombreDePassager={searchParams.numberofpassanger}
-                ></ResultatRechercheHotel>
+                />
               ))}
             </TableBody>
           </Table>
@@ -207,7 +214,9 @@ const Hotel = (props) => {
     </div>
   );
 };
+
 const mapStateToProps = (state) => {
   return { connectedUser: state.connectedUser };
 };
+
 export default connect(mapStateToProps)(Hotel);
