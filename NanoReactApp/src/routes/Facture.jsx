@@ -147,12 +147,14 @@ const Facture = (props) => {
           <Table>
             <TableHead>
               <TableRow>
+                {/* <TableCell>Date d'arrivée</TableCell>
+                <TableCell>Date de départ</TableCell> */}
                 <TableCell>Hotel</TableCell>
                 <TableCell>Ville</TableCell>
                 <TableCell>Pays</TableCell>
                 <TableCell>Étoiles </TableCell>
                 <TableCell>Nombre des passagers </TableCell>
-                <TableCell>Tarif par personne(CAD)</TableCell>
+                <TableCell>Tarif par personne (CAD)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

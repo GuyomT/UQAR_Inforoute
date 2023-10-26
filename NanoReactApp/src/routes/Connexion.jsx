@@ -58,7 +58,6 @@ const Connexion = (props) => {
           <Row style={{ marginTop: "20px" }}>
             <Col xs={2}></Col>
             <Col xs={3}>
-              {/* <Button variant="primary">S'inscrire</Button> */}
               <Card.Link to="/Inscription" as={NavLink}>S'inscrire</Card.Link>
             </Col>
             <Col xs={1}></Col>

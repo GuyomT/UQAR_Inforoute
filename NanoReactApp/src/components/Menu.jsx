@@ -63,8 +63,6 @@ const Menu = (props) => (
       </Nav>
       <Nav></Nav>
     </NavBar>
-    {/*</Col>
-     </Row> */}
   </Container>
 );
 export default Menu;
