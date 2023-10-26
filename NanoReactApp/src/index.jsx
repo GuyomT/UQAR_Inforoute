@@ -11,15 +11,19 @@ import hotelsReducer from "./reducers/HotelsReducer";
 import factureReducer from "./reducers/FactureReducer";
 import thunk from "redux-thunk";
 
-
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   combineReducers({ users: utilisateursReducer , connectedUser: connectedUserReducer, vols: volsReducer, hotels :hotelsReducer, factures:factureReducer}),
-  compose(
-    applyMiddleware(thunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
-  
+  composeEnhancers(applyMiddleware(thunk))
 );
+
+// const store = createStore(
+//   combineReducers({ users: utilisateursReducer , connectedUser: connectedUserReducer, vols: volsReducer, hotels :hotelsReducer, factures:factureReducer}),
+//   compose(
+//     applyMiddleware(thunk),
+//     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+//   )
+// );
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>

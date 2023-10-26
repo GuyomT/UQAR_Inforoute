@@ -48,7 +48,6 @@ const ResultatRechercheHotel = (props) => {
           Réserver
         </Button>
       </TableCell>
-      {/* Add more table cells for additional flight details */}
     </TableRow>
   );
 };

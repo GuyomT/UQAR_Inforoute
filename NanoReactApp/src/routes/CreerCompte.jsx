@@ -33,7 +33,7 @@ const CreerCompte = (props) => {
       setEmailError("");
       emailValid = true;
     } else {
-      setEmailError("émail non valide");
+      setEmailError("email non valide");
       emailValid = false;
     }
   };
@@ -164,7 +164,7 @@ const CreerCompte = (props) => {
               <Col sm="9">
                 <Form.Control
                   type="email"
-                  defaultValue="email@example.com"
+                  placeholder="email@example.com"
                   ref={(input) => (_Email = input)}
                   onChange={(e) => validateEmail(e)}
                 />

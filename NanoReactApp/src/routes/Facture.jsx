@@ -68,6 +68,19 @@ const Facture = (props) => {
   });
 
   const payement = () => {
+    if (props.vols.length == 0 && props.hotels.length == 0) {
+      toast.error("Aucune réservation à payer.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
     updateTotalFacture();
     if (props.connectedUser.solde >= calculTotalFacture()) {
       props.Payement(props.vols, props.hotels, calculTotalFacture());

@@ -27,7 +27,6 @@ const App = () => {
         pauseOnHover
         theme="light"
       />
-      {/* Same as */}
       <ToastContainer />
       <Routes>
         <Route

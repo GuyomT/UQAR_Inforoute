@@ -148,7 +148,7 @@ const Hotel = (props) => {
             </Grid>
             <Grid item xs={2}>
               <TextField
-                label="Nombre de passagers"
+                label="Nombre de personnes"
                 variant="outlined"
                 type="number"
                 value={searchParams.numberofpassanger}
