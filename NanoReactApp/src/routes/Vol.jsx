@@ -73,7 +73,9 @@ const Vol = (props) => {
     const priceB = flights[b].price * searchParams.numberofpassanger;
     return (sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA);
   });
-
+  function preventKeyboardInput(event) {
+    event.preventDefault();
+  }
   return (
     <div className="app centered">
       <Card>
@@ -164,6 +166,9 @@ const Vol = (props) => {
                 label="Nombre de passagers"
                 variant="outlined"
                 type="number"
+                inputProps={ { min: 1} }
+                
+                onKeyDown={preventKeyboardInput}
                 value={searchParams.numberofpassanger}
                 onChange={(e) =>
                   setSearchParams({

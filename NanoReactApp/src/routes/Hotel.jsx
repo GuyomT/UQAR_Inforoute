@@ -44,7 +44,10 @@ const Hotel = (props) => {
     departureDate: "2023-12-25",
     numberofpassanger: 1,
   });
-  const [sortConfig, setSortConfig] = useState({ key: 'priceAvg', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({
+    key: 'priceAvg',
+    direction: 'asc',
+  });
   const token = import.meta.env.VITE_API_KEY;
 
   const handleSearch = () => {
@@ -71,6 +74,9 @@ const Hotel = (props) => {
     return (sortConfig.direction === 'asc' ? priceA - priceB : priceB - priceA);
   });
 
+  function preventKeyboardInput(event) {
+    event.preventDefault();
+  }
   return (
     <div className="app centered">
       <Card>
@@ -157,6 +163,8 @@ const Hotel = (props) => {
                 variant="outlined"
                 type="number"
                 value={searchParams.numberofpassanger}
+                inputProps={{ min: 1 }}
+                onKeyDown={preventKeyboardInput}
                 onChange={(e) =>
                   setSearchParams({
                     ...searchParams,
