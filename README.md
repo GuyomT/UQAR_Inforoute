@@ -4,8 +4,7 @@ Frontend on React.js
 Backend on Django.py
 
 ```bash
-cd django_venv
-source bin/activate
 cd DjangoApp
+pip install -r requirements.txt
 python manage.py runserver
 ```
